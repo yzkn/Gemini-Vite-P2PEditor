@@ -4,7 +4,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-    base: './',
+    base: '/Gemini-Vite-P2PEditor/',
     server: {
         // 明示的にヘッダーを上書きして、外部からのポリシーを緩和を試みる
         headers: {

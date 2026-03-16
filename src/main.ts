@@ -46,26 +46,38 @@ if (model) {
   new MonacoBinding(type, model, new Set([editor]), undefined);
 }
 
+// 指定された文字セットでIDを生成する関数
+const ALPHABET = '123456789abcdefghijkmnopqrstuvwxyz';
+function generateShortId(): string {
+  let result = '';
+  for (let i = 0; i < 4; i++) {
+    result += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+  }
+  return result;
+}
+
 // --- 3. PeerJS による P2P 通信 ---
 
 // URLのハッシュをルームIDとする。なければ新規作成。
 const roomId = window.location.hash.substring(1);
 const isHost = !roomId;
-const peer = new Peer(
-  // {
-  //   debug: 3, // 詳細ログ
-  //   config: {
-  //     iceServers: [
-  //       { urls: 'stun:stun.l.google.com:19302' },
-  //       { urls: 'stun:stun1.l.google.com:19302' },
-  //       { urls: 'stun:stun2.l.google.com:19302' },
-  //       { urls: 'stun:stun3.l.google.com:19302' },
-  //       { urls: 'stun:stun4.l.google.com:19302' },
-  //     ],
-  //     // Firefoxで有効な設定
-  //     iceCandidatePoolSize: 10,
-  //   }
-  // }
+// ホストなら新規ID、ゲストならURLのIDを使用
+let myPeerId = isHost ? generateShortId() : '';
+const peer = new Peer(myPeerId,
+  {
+    debug: 1,
+    //   config: {
+    //     iceServers: [
+    //       { urls: 'stun:stun.l.google.com:19302' },
+    //       { urls: 'stun:stun1.l.google.com:19302' },
+    //       { urls: 'stun:stun2.l.google.com:19302' },
+    //       { urls: 'stun:stun3.l.google.com:19302' },
+    //       { urls: 'stun:stun4.l.google.com:19302' },
+    //     ],
+    //     // Firefoxで有効な設定
+    //     iceCandidatePoolSize: 10,
+    //   }
+  }
 ); // ランダムなIDで自分を初期化
 
 peer.on('open', (myId: string) => {
@@ -78,6 +90,20 @@ peer.on('open', (myId: string) => {
     statusEl.innerText = `接続中: ${roomId}...`;
     const conn = peer.connect(roomId);
     setupConnection(conn);
+  }
+});
+
+// 万が一IDが重複していた場合の再試行ロジック
+peer.on('error', (err) => {
+  if (err.type === 'unavailable-id' && isHost) {
+    console.warn('IDが既に使用されています。新しいIDを生成します...');
+    const newId = generateShortId();
+    // ページをリロードして新しいIDで再試行（一番確実な方法）
+    window.location.hash = newId;
+    window.location.reload();
+  } else {
+    console.error('PeerJS Error:', err);
+    statusEl.innerText = `エラー: ${err.type}`;
   }
 });
 
