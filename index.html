@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="worker-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+  <title>P2P Collaborative Editor</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+
+    #toolbar {
+      padding: 10px;
+      background: #333;
+      color: white;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #editor {
+      flex-grow: 1;
+    }
+
+    .status {
+      font-size: 12px;
+      margin-left: auto;
+    }
+
+    button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toolbar">
+    <strong>P2P Editor</strong>
+    <button id="downloadBtn">保存(ダウンロード)</button>
+    <input type="file" id="uploadInput" style="display:none">
+    <button id="uploadBtn">開く(アップロード)</button>
+    <button id="copyUrlBtn">共有URLをコピー</button>
+    <div class="status" id="status">接続待機中...</div>
+  </div>
+  <div id="editor"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html><!-- Copyright (c) 2026 YA-androidapp(https://github.com/yzkn) All rights reserved. -->
