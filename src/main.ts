@@ -204,3 +204,48 @@ document.getElementById('copyUrlBtn')!.onclick = () => {
   navigator.clipboard.writeText(window.location.href);
   alert('共有URLをコピーしました！');
 };
+
+
+// QRコード表示
+import QRCode from 'qrcode';
+
+
+// 要素の取得
+const shareBtn = document.getElementById('share-btn') as HTMLButtonElement;
+const qrModal = document.getElementById('qr-modal') as HTMLDivElement;
+const qrCanvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
+const qrUrlText = document.getElementById('qr-url-text') as HTMLDivElement;
+const closeQrBtn = document.getElementById('close-qr-btn') as HTMLButtonElement;
+
+// QRコードを表示する関数
+const showQRCode = () => {
+  const currentUrl = window.location.href;
+
+  // CanvasにQRコードを描画
+  QRCode.toCanvas(qrCanvas, currentUrl, {
+    width: 250,
+    margin: 2,
+  }, (error) => {
+    if (error) console.error('QR生成エラー:', error);
+  });
+
+  // URLテキストを表示
+  qrUrlText.textContent = currentUrl;
+
+  // モーダルを表示
+  qrModal.style.display = 'flex';
+};
+
+// 閉じる関数
+const hideQRCode = () => {
+  qrModal.style.display = 'none';
+};
+
+// イベントリスナーの登録
+shareBtn.addEventListener('click', showQRCode);
+closeQrBtn.addEventListener('click', hideQRCode);
+
+// 背景クリックでも閉じるようにする場合
+qrModal.addEventListener('click', (e) => {
+  if (e.target === qrModal) hideQRCode();
+});

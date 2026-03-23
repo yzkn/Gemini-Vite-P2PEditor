@@ -36,6 +36,45 @@
     button {
       cursor: pointer;
     }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      color: #333;
+      max-width: 90%;
+    }
+
+    #qr-canvas {
+      max-width: 100%;
+      height: auto !important;
+    }
+
+    .url-display {
+      word-break: break-all;
+      font-size: 12px;
+      margin: 10px 0;
+      color: #666;
+    }
+
+    #close-qr-btn {
+      padding: 8px 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -46,9 +85,21 @@
     <input type="file" id="uploadInput" style="display:none">
     <button id="uploadBtn">開く(アップロード)</button>
     <button id="copyUrlBtn">共有URLをコピー</button>
+    <button id="share-btn">共有URLをQRコードで表示</button>
     <div class="status" id="status">接続待機中...</div>
   </div>
   <div id="editor"></div>
+
+  <!-- QRコード表示用モーダル -->
+  <div id="qr-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3>共有用QRコード</h3>
+      <canvas id="qr-canvas"></canvas>
+      <div id="qr-url-text" class="url-display"></div>
+      <button id="close-qr-btn">閉じる</button>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
 </body>
 
